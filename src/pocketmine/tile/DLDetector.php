@@ -9,23 +9,19 @@
  * OpenGenisys Project
  */
 namespace pocketmine\tile;
-
 use pocketmine\block\Block;
 use pocketmine\block\DaylightDetector;
 use pocketmine\level\format\FullChunk;
-use pocketmine\nbt\tag\Compound;
-use pocketmine\nbt\tag\String;
-use pocketmine\nbt\tag\Int;
+use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\nbt\tag\StringTag;
+use pocketmine\nbt\tag\IntTag;
 use pocketmine\level\Level;
-
 class DLDetector extends Spawnable{
 	private $lastType = 0;
-
-	public function __construct(FullChunk $chunk, Compound $nbt){
+	public function __construct(FullChunk $chunk, CompoundTag $nbt){
 		parent::__construct($chunk, $nbt);
 		$this->scheduleUpdate();
 	}
-
 	public function getLightByTime(){
 		/*	$strength = 1;
 			$time = $this->getLevel()->getTime();
@@ -71,8 +67,7 @@ class DLDetector extends Spawnable{
 			($time >= Level::TIME_SUNRISE and $time <= Level::TIME_FULL)) return 15;
 		return 0;
 	}
-
-	public function isActivated(){
+	public function isActivated() : bool{
 		if($this->getType() == Block::DAYLIGHT_SENSOR) {
 			if($this->getLightByTime() == 15) return true;
 			return false;
@@ -81,11 +76,9 @@ class DLDetector extends Spawnable{
 			return false;
 		}
 	}
-
-	private function getType(){
+	private function getType() : int{
 		return $this->getBlock()->getId();
 	}
-
 	public function onUpdate(){
 		if(($this->getLevel()->getServer()->getTick() % 3) == 0){ //Update per 3 ticks
 			if($this->getType() != $this->lastType){ //Update when changed
@@ -101,13 +94,12 @@ class DLDetector extends Spawnable{
 		}
 		return true;
 	}
-
 	public function getSpawnCompound(){
-		return new Compound("", [
-			new String("id", Tile::DAY_LIGHT_DETECTOR),
-			new Int("x", (int) $this->x),
-			new Int("y", (int) $this->y),
-			new Int("z", (int) $this->z),
+		return new CompoundTag("", [
+			new StringTag("id", Tile::DAY_LIGHT_DETECTOR),
+			new IntTag("x", (int) $this->x),
+			new IntTag("y", (int) $this->y),
+			new IntTag("z", (int) $this->z),
 		]);
 	}
 }
